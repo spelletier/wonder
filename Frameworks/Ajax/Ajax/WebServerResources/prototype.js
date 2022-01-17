@@ -4275,45 +4275,14 @@ Ajax.PeriodicalUpdater = Class.create(Ajax.Base, {
 
     source  = $(source);
     element = $(element);
-    var p, delta, layout, styles = {};
+    var layout, styles = {};
 
-    if (options.setLeft || options.setTop) {
-      p = Element.viewportOffset(source);
-      delta = [0, 0];
-      if (Element.getStyle(element, 'position') === 'absolute') {
-        var parent = Element.getOffsetParent(element);
-        if (parent !== document.body) delta = Element.viewportOffset(parent);
-      }
-    }
-
-    function pageScrollXY() {
-      var x = 0, y = 0;
-      if (Object.isNumber(window.pageXOffset)) {
-        x = window.pageXOffset;
-        y = window.pageYOffset;
-      } else if (document.body && (document.body.scrollLeft || document.body.scrollTop)) {
-        x = document.body.scrollLeft;
-        y = document.body.scrollTop;
-      } else if (docEl && (docEl.scrollLeft || docEl.scrollTop)) {
-        x = docEl.scrollLeft;
-        y = docEl.scrollTop;
-      }
-      return { x: x, y: y };
-    }
-
-    var pageXY = pageScrollXY();
-
-
-    if (options.setWidth || options.setHeight) {
-      layout = Element.getLayout(source);
-    }
+   	layout = source.getLayout(true);
 
     if (options.setLeft)
-      styles.left = (p[0] + pageXY.x - delta[0] + options.offsetLeft) + 'px';
+      styles.left = (layout.get('left') + options.offsetLeft) + 'px';
     if (options.setTop)
-      styles.top  = (p[1] + pageXY.y - delta[1] + options.offsetTop)  + 'px';
-
-    var currentLayout = element.getLayout();
+      styles.top = (layout.get('top') + options.offsetTop) + 'px';
 
     if (options.setWidth) {
       styles.width = layout.get('width')  + 'px';
